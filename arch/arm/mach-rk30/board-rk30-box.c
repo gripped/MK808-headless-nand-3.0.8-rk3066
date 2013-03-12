@@ -72,10 +72,15 @@
 	#endif
 #else
 	#ifdef CONFIG_BOX_FB_1080P
-		#define RK30_FB0_MEM_SIZE 16*SZ_1M
+		#define RK30_FB0_MEM_SIZE 24*SZ_1M //IAM
 	#else
-		#define RK30_FB0_MEM_SIZE 8*SZ_1M
+		#define RK30_FB0_MEM_SIZE 12*SZ_1M
 	#endif
+#endif
+#ifdef CONFIG_BOX_FB_1080P
+#define RK30_IPP_MEM_SIZE 32*SZ_1M //IAM
+#else
+#define RK30_IPP_MEM_SIZE 16*SZ_1M
 #endif
 
 #ifdef CONFIG_VIDEO_RK29
@@ -900,7 +905,8 @@ static int rk_fb_io_enable(void)
 
 #if defined(CONFIG_LCDC0_RK30)
 struct rk29fb_info lcdc0_screen_info = {
-	.prop	   = PRMRY,		//primary display device
+//IAM	.prop	   = PRMRY,		//primary display device
+	.prop		= EXTEND,	//extend display device
 	.io_init   = rk_fb_io_init,
 	.io_disable = rk_fb_io_disable,
 	.io_enable = rk_fb_io_enable,
@@ -911,7 +917,8 @@ struct rk29fb_info lcdc0_screen_info = {
 #if defined(CONFIG_LCDC1_RK30)
 struct rk29fb_info lcdc1_screen_info = {
 	#if defined(CONFIG_HDMI_RK30)
-	.prop		= EXTEND,	//extend display device
+//	.prop		= EXTEND,	//extend display device
+	.prop	   = PRMRY,		//primary display device
 	.lcd_info  = NULL,
 	.set_screen_info = set_lcd_info,
 	#endif
@@ -933,6 +940,18 @@ static struct resource resource_fb[] = {
 	},
 	[2] = {
 		.name  = "fb2 buf",
+		.start = 0,
+		.end   = 0,//RK30_FB0_MEM_SIZE - 1,
+		.flags = IORESOURCE_MEM,
+	},
+	[3] = {
+		.name  = "mali sdram",
+		.start = 0,
+		.end   = 0,//RK30_FB0_MEM_SIZE - 1,
+		.flags = IORESOURCE_MEM,
+	},
+	[4] = {
+		.name  = "mali fb",
 		.start = 0,
 		.end   = 0,//RK30_FB0_MEM_SIZE - 1,
 		.flags = IORESOURCE_MEM,
@@ -1094,7 +1113,7 @@ static struct platform_device irda_device = {
 #endif
 
 #ifdef CONFIG_ION
-#define ION_RESERVE_SIZE        (80 * SZ_1M)
+#define ION_RESERVE_SIZE        (40 * SZ_1M) //IAM 80
 static struct ion_platform_data rk30_ion_pdata = {
 	.nr = 1,
 	.heaps = {
@@ -1370,7 +1389,7 @@ static struct pwm_platform_data pwm_regulator_info[1] = {
                 .pwm_iomux_name = GPIO0D7_PWM3_NAME,
                 .pwm_iomux_pwm = GPIO0D_PWM3,
                 .pwm_iomux_gpio = GPIO0D_GPIO0D6,
-                .pwm_voltage = 1100000,
+                .pwm_voltage = 1100000,//IAM 1100000
                 .suspend_voltage = 1050000,
                 .min_uV = 1000000,
                 .max_uV = 1400000,
@@ -1684,6 +1703,9 @@ int __sramdata gpio0d7_iomux,gpio0d7_do,gpio0d7_dir,gpio0d7_en;
 void __sramfunc rk30_pwm_logic_suspend_voltage(void)
 {
 #ifdef CONFIG_RK30_PWM_REGULATOR
+//IAM
+#define grf_readl(offset)	readl_relaxed(RK30_GRF_BASE + offset)
+#define grf_writel(v, offset)	do { writel_relaxed(v, RK30_GRF_BASE + offset); dsb(); } while (0)
 
 //	int gpio0d7_iomux,gpio0d7_do,gpio0d7_dir,gpio0d7_en;
 	sram_udelay(10000);
@@ -1892,12 +1914,21 @@ static void __init rk30_reserve(void)
 #ifdef CONFIG_FB_ROCKCHIP
 	resource_fb[0].start = board_mem_reserve_add("fb0", RK30_FB0_MEM_SIZE);
 	resource_fb[0].end = resource_fb[0].start + RK30_FB0_MEM_SIZE - 1;
-	resource_fb[1].start = board_mem_reserve_add("ipp buf", RK30_FB0_MEM_SIZE);
-	resource_fb[1].end = resource_fb[1].start + RK30_FB0_MEM_SIZE - 1;
+	resource_fb[1].start = board_mem_reserve_add("ipp buf", RK30_IPP_MEM_SIZE);
+	resource_fb[1].end = resource_fb[1].start + RK30_IPP_MEM_SIZE - 1;
+//IAM
+/*
 	#if !defined(CONFIG_DUAL_DISP_IN_KERNEL) || !defined(CONFIG_THREE_FB_BUFFER)
 	resource_fb[2].start = board_mem_reserve_add("fb2", RK30_FB0_MEM_SIZE);
 	resource_fb[2].end = resource_fb[2].start + RK30_FB0_MEM_SIZE - 1;
 	#endif
+*/
+//IAM
+/*	resource_fb[3].start = board_mem_reserve_add("malisdr", RK30_FB0_MEM_SIZE*2);
+	resource_fb[3].end = resource_fb[3].start + RK30_FB0_MEM_SIZE*2 - 1;
+	resource_fb[4].start = board_mem_reserve_add("malifb", RK30_FB0_MEM_SIZE);
+	resource_fb[4].end = resource_fb[4].start + RK30_FB0_MEM_SIZE - 1;
+	*/
 #endif
 #ifdef CONFIG_VIDEO_RK29
 	rk30_camera_request_reserve_mem();
@@ -1923,15 +1954,15 @@ static struct dvfs_arm_table dvfs_cpu_logic_table[] = {
 	{.frequency = 1416 * 1000,	.cpu_volt = 1275 * 1000,	.logic_volt = 1150 * 1000},//1.225V/1.100V
 	{.frequency = 1512 * 1000,	.cpu_volt = 1350 * 1000,	.logic_volt = 1200 * 1000},//1.300V/1.150V
 	{.frequency = 1608 * 1000,	.cpu_volt = 1375 * 1000,	.logic_volt = 1200 * 1000},//1.325V/1.175V*/
-	{.frequency = 252 * 1000,	.cpu_volt = 1075 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
-	{.frequency = 504 * 1000,	.cpu_volt = 1100 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
-	{.frequency = 816 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1150 * 1000},//1.000V/1.025V
-	{.frequency = 1008 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1150 * 1000},//1.025V/1.050V
-	{.frequency = 1200 * 1000,	.cpu_volt = 1175 * 1000,	.logic_volt = 1200 * 1000},//1.100V/1.050V
-	{.frequency = 1272 * 1000,	.cpu_volt = 1225 * 1000,	.logic_volt = 1200 * 1000},//1.150V/1.100V
-	{.frequency = 1416 * 1000,	.cpu_volt = 1300 * 1000,	.logic_volt = 1200 * 1000},//1.225V/1.100V
-	{.frequency = 1512 * 1000,	.cpu_volt = 1350 * 1000,	.logic_volt = 1250 * 1000},//1.300V/1.150V
-	{.frequency = 1608 * 1000,	.cpu_volt = 1425 * 1000,	.logic_volt = 1300 * 1000},//1.325V/1.175V
+//	{.frequency = 252 * 1000,	.cpu_volt = 1075 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
+//	{.frequency = 504 * 1000,	.cpu_volt = 1100 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
+	{.frequency = 816 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1125 * 1000},//1.000V/1.025V
+	{.frequency = 1008 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1125 * 1000},//1.025V/1.050V
+	{.frequency = 1200 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1125 * 1000},//1.100V/1.050V
+	{.frequency = 1272 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1125 * 1000},//1.150V/1.100V
+	{.frequency = 1416 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1125 * 1000},//1.225V/1.100V
+	{.frequency = 1512 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1125 * 1000},//1.300V/1.150V
+//	{.frequency = 1608 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1125 * 1000},//1.325V/1.175V
 #else
 //	{.frequency = 252 * 1000,	.cpu_volt = 1075 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
 	{.frequency = 504 * 1000,	.cpu_volt = 1100 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
@@ -1949,14 +1980,14 @@ static struct dvfs_arm_table dvfs_cpu_logic_table[] = {
 
 static struct cpufreq_frequency_table dvfs_gpu_table[] = {	
 #ifdef CONFIG_MACH_RK30_BOX_HOTDOG	
-	{.frequency = 266 * 1000,	.index = 1050 * 1000},
+	{.frequency = 266 * 1000,	.index = 1050 * 1000},//1050
 #endif
-	{.frequency = 400 * 1000,	.index = 1275 * 1000},
+	{.frequency = 400 * 1000,	.index = 1125 * 1000},//1275
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
 static struct cpufreq_frequency_table dvfs_ddr_table[] = {
-	{.frequency = 300 * 1000,	.index = 1050 * 1000},
+	{.frequency = 300 * 1000,	.index = 1050 * 1000},//1050
 	{.frequency = 400 * 1000,	.index = 1125 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
@@ -1972,8 +2003,11 @@ void __init board_clock_init(void)
 	dvfs_set_freq_volt_table(clk_get(NULL, "gpu"), dvfs_gpu_table);
 	dvfs_set_freq_volt_table(clk_get(NULL, "ddr"), dvfs_ddr_table);
 #ifdef CONFIG_MACH_RK30_BOX_HOTDOG
-	dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 266 * 1000000);
-	dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 252 * 1000000, 1200 * 1000000);
+//	dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 266 * 1000000);
+//IAM
+//	dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 252 * 1000000, 1200 * 1000000);
+	dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 816 * 1000000, 1512 * 1000000);
+	dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 400 * 1000000);
 #endif
 }
 

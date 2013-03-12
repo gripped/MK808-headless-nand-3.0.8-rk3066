@@ -27,7 +27,7 @@ int rkwifi_set_country_code(char *code)
  * Set Firmware Path
  */
  
-#define ANDROID_FW_PATH "/system/etc/firmware/"
+#define ANDROID_FW_PATH "/lib/firmware/"
 
 int rkwifi_set_firmware(char *fw, char *nvram)
 {
@@ -42,7 +42,7 @@ int rkwifi_set_firmware(char *fw, char *nvram)
 #endif	
 
 #ifdef CONFIG_RK901
-	sprintf(fw, "%s%s", ANDROID_FW_PATH, "fw_RK901.bin");
+	sprintf(fw, "%s%s", ANDROID_FW_PATH, "fw_RK901a2.bin");
 	sprintf(nvram, "%s%s", ANDROID_FW_PATH, "nvram_RK901.txt");
 #endif
 

@@ -32,6 +32,7 @@ static struct miscdevice vflash_miscdev;
 #define READ_BDADDR_FROM_FLASH  0x01
 
 extern char GetSNSectorInfo(char * pbuf);
+
 extern unsigned char wlan_mac_addr[6];
 
 static long vflash_ioctl(struct file *file,

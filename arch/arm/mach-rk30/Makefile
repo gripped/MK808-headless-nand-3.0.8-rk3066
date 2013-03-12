@@ -1,4 +1,3 @@
-
 obj-y += clock.o
 obj-y += clock_data.o
 obj-y += common.o

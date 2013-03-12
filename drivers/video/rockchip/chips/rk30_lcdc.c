@@ -41,6 +41,7 @@ static int dbg_thresd = 0;
 module_param(dbg_thresd, int, S_IRUGO|S_IWUSR);
 #define DBG(level,x...) do { if(unlikely(dbg_thresd > level)) printk(KERN_INFO x); } while (0)
 
+u32 ColorKey = 0x020202;
 
 static int init_rk30_lcdc(struct rk_lcdc_device_driver *dev_drv)
 {
@@ -449,8 +450,11 @@ static int rk30_cursor_set_pos(struct rk_lcdc_device_driver *dev_drv, int x, int
 	struct layer_par *par=dev_drv->layer_par[0];
 	int xpos, ypos;
 	
-	xpos = (x * dev_drv->screen->x_res * dev_drv->x_scale/100)/1280;
-	ypos = (y * dev_drv->screen->y_res * dev_drv->y_scale/100)/720;
+//IAM	xpos = (x * dev_drv->screen->x_res * dev_drv->x_scale/100)/1280;
+//	ypos = (y * dev_drv->screen->y_res * dev_drv->y_scale/100)/720;
+	xpos = (x * dev_drv->x_scale)/100;
+	ypos = (y * dev_drv->y_scale)/100;
+
 	xpos += dev_drv->screen->x_res * (100 - dev_drv->x_scale)/200 + dev_drv->screen->left_margin + dev_drv->screen->hsync_len;
 	ypos += dev_drv->screen->y_res * (100 - dev_drv->y_scale)/200 + dev_drv->screen->upper_margin + dev_drv->screen->vsync_len;
 //	printk(KERN_INFO "lcdc%d cursor xpos %d ypos %d\n",lcdc_dev->id, xpos, ypos);
@@ -578,7 +582,8 @@ static  int win0_set_par(struct rk30_lcdc_device *lcdc_dev,rk_screen *screen,
 		LcdWrReg(lcdc_dev, WIN0_DSP_ST, v_DSP_STX(xpos) | v_DSP_STY(ypos));
 		LcdWrReg(lcdc_dev, WIN0_DSP_INFO, v_DSP_WIDTH(par->xsize)| v_DSP_HEIGHT(par->ysize));
 		LcdMskReg(lcdc_dev, WIN0_COLOR_KEY_CTRL, m_COLORKEY_EN | m_KEYCOLOR,
-			v_COLORKEY_EN(1) | v_KEYCOLOR(0));
+			v_COLORKEY_EN(1) | v_KEYCOLOR(ColorKey));
+//IAM			v_COLORKEY_EN(1) | v_KEYCOLOR(0));
 		switch(par->format) 
 		{
 			case ARGB888:
@@ -659,7 +664,8 @@ static int win1_set_par(struct rk30_lcdc_device *lcdc_dev,rk_screen *screen,
 		LcdWrReg(lcdc_dev, WIN1_DSP_ST,v_DSP_STX(xpos) | v_DSP_STY(ypos));
 		LcdWrReg(lcdc_dev, WIN1_DSP_INFO,v_DSP_WIDTH(par->xsize) | v_DSP_HEIGHT(par->ysize));
 		// enable win1 color key and set the color to black(rgb=0)
-		LcdMskReg(lcdc_dev, WIN1_COLOR_KEY_CTRL, m_COLORKEY_EN | m_KEYCOLOR,v_COLORKEY_EN(1) | v_KEYCOLOR(0));
+//IAM		LcdMskReg(lcdc_dev, WIN1_COLOR_KEY_CTRL, m_COLORKEY_EN | m_KEYCOLOR,v_COLORKEY_EN(1) | v_KEYCOLOR(0));
+		LcdMskReg(lcdc_dev, WIN1_COLOR_KEY_CTRL, m_COLORKEY_EN | m_KEYCOLOR,v_COLORKEY_EN(1) | v_KEYCOLOR(ColorKey));
 		switch(par->format)
 	    	{
 		        case ARGB888:
@@ -777,11 +783,18 @@ int rk30_lcdc_pan_display(struct rk_lcdc_device_driver * dev_drv,int layer_id)
 int rk30_lcdc_ioctl(struct rk_lcdc_device_driver * dev_drv,unsigned int cmd, unsigned long arg,int layer_id)
 {
 	struct rk30_lcdc_device *lcdc_dev = container_of(dev_drv,struct rk30_lcdc_device,driver);
-	u32 panel_size[2];
+	u32 panel_size[2], tmp;
 	void __user *argp = (void __user *)arg;
 	int ret = 0;
 	switch(cmd)
 	{
+	//IAM
+		case FBIOPUT_SET_COLORKEY:    //set colorkey
+			if(copy_from_user(&tmp, (void*)arg, sizeof(u32)))
+			    return -EFAULT;
+			ColorKey = tmp;
+			break;
+
 		case FBIOGET_PANEL_SIZE:    //get panel size
                 	panel_size[0] = lcdc_dev->screen->x_res;
                 	panel_size[1] = lcdc_dev->screen->y_res;

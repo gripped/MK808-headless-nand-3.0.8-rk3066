@@ -821,10 +821,10 @@ static long __video_do_ioctl(struct file *file,
 	case VIDIOC_S_FMT:
 	{
 		struct v4l2_format *f = (struct v4l2_format *)arg;
-		
+
 		/* FIXME: Should be one dump per type */
 		dbgarg(cmd, "type=%s\n", prt_names(f->type, v4l2_type_names));
-		
+
 		switch (f->type) {
 		case V4L2_BUF_TYPE_VIDEO_CAPTURE:
 			CLEAR_AFTER_FIELD(f, fmt.pix);
@@ -2289,6 +2289,10 @@ static int check_array_args(unsigned int cmd, void *parg, size_t *array_size,
 		struct v4l2_ext_controls *ctrls = parg;
 
 		if (ctrls->count != 0) {
+			if (ctrls->count > V4L2_CID_MAX_CTRLS) {
+				ret = -EINVAL;
+				break;
+			}
 			*user_ptr = (void __user *)ctrls->controls;
 			*kernel_ptr = (void **)&ctrls->controls;
 			*array_size = sizeof(struct v4l2_ext_control)

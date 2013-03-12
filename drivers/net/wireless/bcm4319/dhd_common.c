@@ -39,8 +39,8 @@
 
 #include <wlioctl.h>
 
-#define CONFIG_BCM4319_FW_PATH   "/system/etc/firmware/fw_bcm4319.bin"
-#define CONFIG_BCM4319_NVRAM_PATH  "/system/etc/firmware/nvram.txt"
+#define CONFIG_BCM4319_FW_PATH   "/lib/firmware/fw_bcm4319.bin"
+#define CONFIG_BCM4319_NVRAM_PATH  "/lib/firmware/nvram.txt"
 
 #ifdef SET_RANDOM_MAC_SOFTAP
 #include <linux/random.h>

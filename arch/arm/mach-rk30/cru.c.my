@@ -1,0 +1,15 @@
+
+#include <linux/kernel.h>
+#include <mach/cru.h>
+#include <mach/io.h>
+#include <asm/io.h>
+
+
+//static inline void cru_set_soft_reset(enum cru_soft_reset idx, bool on)
+void cru_set_soft_reset(enum cru_soft_reset idx, bool on)
+{
+	const void __iomem *reg = RK30_CRU_BASE + CRU_SOFTRSTS_CON(idx >> 4);
+	u32 val = on ? 0x10001U << (idx & 0xf) : 0x10000U << (idx & 0xf);
+	writel_relaxed(val, reg);
+	dsb();
+}

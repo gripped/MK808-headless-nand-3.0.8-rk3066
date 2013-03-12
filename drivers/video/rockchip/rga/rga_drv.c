@@ -57,6 +57,7 @@
 
 #define RGA_POWER_OFF_DELAY	4*HZ /* 4s */
 #define RGA_TIMEOUT_DELAY	2*HZ /* 2s */
+//#define RGA_TIMEOUT_DELAY	0.05*HZ /* 2s */
 
 #define RGA_MAJOR		255
 

@@ -68,7 +68,7 @@ static struct clk *cpu_gpll;
 static DEFINE_MUTEX(cpufreq_mutex);
 
 static struct clk *gpu_clk;
-#define GPU_MAX_RATE 350*1000*1000
+#define GPU_MAX_RATE 400*1000*1000
 
 static int cpufreq_scale_rate_for_dvfs(struct clk *clk, unsigned long rate, dvfs_set_rate_callback set_rate);
 
@@ -96,7 +96,8 @@ static bool rk30_cpufreq_is_ondemand_policy(struct cpufreq_policy *policy)
 #define CONFIG_RK30_CPU_FREQ_LIMIT_BY_TEMP
 
 #ifdef CONFIG_RK30_CPU_FREQ_LIMIT_BY_TEMP
-static void rk30_cpufreq_temp_limit_work_func(struct work_struct *work);
+static void 
+rk30_cpufreq_temp_limit_work_func(struct work_struct *work);
 
 static DECLARE_DELAYED_WORK(rk30_cpufreq_temp_limit_work, rk30_cpufreq_temp_limit_work_func);
 
@@ -106,10 +107,15 @@ module_param(temp_limt_freq, uint, 0444);
 #define TEMP_LIMIT_FREQ 816000
 
 static const struct cpufreq_frequency_table temp_limits[] = {
-	{.frequency = 1416 * 1000, .index = 50},
+	{.frequency = 1512 * 1000, .index = 60},
+	{.frequency = 1416 * 1000, .index = 65},
+	{.frequency = 1200 * 1000, .index = 70},
+	{.frequency = 1008 * 1000, .index = 75},
+	{.frequency =  816 * 1000, .index = 80},
+/*IAM	{.frequency = 1416 * 1000, .index = 50},
 	{.frequency = 1200 * 1000, .index = 55},
 	{.frequency = 1008 * 1000, .index = 60},
-	{.frequency =  816 * 1000, .index = 75},
+	{.frequency =  816 * 1000, .index = 75},*/
 };
 
 extern int rk30_tsadc_get_temp(unsigned int chn);
@@ -254,8 +260,9 @@ static int rk30_cpu_init(struct cpufreq_policy *policy)
 		for (i = 0; freq_table[i].frequency != CPUFREQ_TABLE_END; i++) {
 			max_freq = max(max_freq, freq_table[i].frequency);
 		}
+		FREQ_PRINTK_DBG("freq_table - %d items, sel freq:%d\n",i,max_freq);
 		clk_enable_dvfs(cpu_clk);
-
+    
 		/* Limit gpu frequency between 133M to 400M */
 #ifndef CONFIG_MACH_RK30_BOX_HOTDOG
 		dvfs_clk_enable_limit(gpu_clk, 133000000, 400000000);
@@ -512,6 +519,7 @@ static unsigned int cpufreq_scale_limt(unsigned int target_freq, struct cpufreq_
 	bool is_ondemand = rk30_cpufreq_is_ondemand_policy(policy);
 	static bool is_booting = true;
 
+	FREQ_PRINTK_DBG("cpufreq_scale_limt: max_freq:%d \n",max_freq);
 	if (is_ondemand && clk_get_rate(gpu_clk) > GPU_MAX_RATE) // high performance?
 		return max_freq;
 	if (is_ondemand && is_booting && target_freq >= 1600 * 1000) {
@@ -523,12 +531,16 @@ static unsigned int cpufreq_scale_limt(unsigned int target_freq, struct cpufreq_
 		}
 	}
 #ifdef CONFIG_RK30_CPU_FREQ_LIMIT_BY_TEMP
-	if (is_ondemand && target_freq > policy->cur && policy->cur >= TEMP_LIMIT_FREQ) {
+	FREQ_PRINTK_DBG("cpufreq_scale_limt: policy_cur:%d \n",policy->cur);
+//IAM	if (is_ondemand && target_freq > policy->cur && policy->cur >= TEMP_LIMIT_FREQ) {
+	if (is_ondemand && target_freq > temp_limt_freq && policy->cur >= temp_limt_freq) {
 		unsigned int i;
-		if (cpufreq_frequency_table_target(policy, freq_table, policy->cur + 1, CPUFREQ_RELATION_L, &i) == 0) {
+//		if (cpufreq_frequency_table_target(policy, freq_table, policy->cur + 1, CPUFREQ_RELATION_L, &i) == 0) {
+		if (cpufreq_frequency_table_target(policy, freq_table, temp_limt_freq + 1, CPUFREQ_RELATION_L, &i) == 0) {
 			unsigned int f = freq_table[i].frequency;
 			if (f < target_freq) {
 				target_freq = f;
+				FREQ_PRINTK_DBG("freq by temp limit (%d)\n", f);
 			}
 		}
 	}
@@ -614,7 +626,9 @@ static int rk30_target(struct cpufreq_policy *policy, unsigned int target_freq, 
 		FREQ_PRINTK_ERR("no freq match for %d(ret=%d)\n", target_freq, ret);
 		goto out;
 	}
+//IAM
 	new_rate = freq_table[i].frequency;
+	FREQ_PRINTK_DBG("freq_table_targ, ret:%d, i:%d newrate:%d, policy - min:%d max:%d\n",ret,i,new_rate,policy->min,policy->max);
 	if (!no_cpufreq_access)
 		new_rate = cpufreq_scale_limt(new_rate, policy);
 

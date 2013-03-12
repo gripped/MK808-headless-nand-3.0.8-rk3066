@@ -26,12 +26,6 @@ config WLAN_80211
 	  This option does not affect the kernel build, it only
 	  lets you choose drivers.
 
-choice
-	prompt "WiFi device driver support"
-	default WIFI_NONE
-
-	config WIFI_NONE
-	  bool "No WiFi"
 
 	config BCM4329
 	  depends on WLAN_80211 && MMC
@@ -39,7 +33,7 @@ choice
 	  select WEXT_PRIV
 	  select IEEE80211
 	  select FW_LOADER
-	  bool "Broadcom BCM4329 WiFi/BT Combo SDIO"
+	  tristate "Broadcom BCM4329 WiFi/BT Combo SDIO"
 	  ---help---
 	    A library for Broadcom BCM4329 SDIO WLAN/BT combo devices.
 	    So far, the following modules have been verified:
@@ -51,29 +45,14 @@ choice
 	  select WEXT_PRIV
 	  select IEEE80211
 	  select FW_LOADER
-	  bool "Broadcom BCM4319 WiFi SDIO"
+	  tristate "Broadcom BCM4319 WiFi SDIO"
 	  ---help---
 	    A library for Broadcom BCM4319 SDIO WLAN devices. 
 
-	config MV8686
-	  depends on WLAN_80211 && MMC
-	  select WIRELESS_EXT
-	  select IEEE80211
-	  select FW_LOADER
-	  bool "Marvell MV8686 SDIO"
-	  ---help---
-	    A library for Marvell 8686 SDIO WLAN devices.
-	    So far, the following modules have been verified:
-	      (1) Samsung    SWL-2480
-	      (2) Azurewave  AW-GH321
-	      (3) USI        WM-G-MR-09
-	      (4) Murata     SP-8HEP-P
-
-source "drivers/net/wireless/rtl8192c/Kconfig"
-source "drivers/net/wireless/rtl8188eu/Kconfig"
-source "drivers/net/wireless/ar6003/Kconfig"
 source "drivers/net/wireless/rkwifi/Kconfig"
-endchoice
+source "drivers/net/wireless/bcmdhd1/Kconfig"
+source "drivers/net/wireless/bcm40181/Kconfig"
+source "drivers/net/wireless/rt2x00/Kconfig"
 
 choice	
 	depends on RKWIFI && WLAN_80211

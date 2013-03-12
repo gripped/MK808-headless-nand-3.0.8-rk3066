@@ -461,6 +461,7 @@ extern void dwc_otg_hcd_queue_transactions(dwc_otg_hcd_t *_hcd,
 					   dwc_otg_transaction_type_e _tr_type);
 extern void dwc_otg_hcd_complete_urb(dwc_otg_hcd_t *_hcd, struct urb *_urb,
 				     int _status);
+extern void dwc_otg_clear_halt(struct urb *_urb);
 /** @} */
 
 /** @name Interrupt Handler Functions */

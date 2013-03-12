@@ -1,4 +1,4 @@
 rk3066-kernel
 =============
 
-Linux/Android kernel for the Rockchip RK3066 SoC
+Linux kernel for mk808 on the Rockchip RK3066 SoC

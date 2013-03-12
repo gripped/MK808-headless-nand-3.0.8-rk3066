@@ -205,8 +205,9 @@ int32_t dwc_otg_hcd_handle_sof_intr (dwc_otg_hcd_t *_hcd)
 			if((qh->do_split)&&dwc_frame_num_gt(_hcd->frame_number, 
 				dwc_frame_num_inc(qh->start_split_frame, 4))&&(qtd->complete_split))
 			{
-			    DWC_PRINT("frame_number 0x%x, start 0x%x, complete: %x", 
-			        _hcd->frame_number, qh->start_split_frame, qtd->complete_split);
+//			    DWC_PRINT("frame_number 0x%x, start 0x%x, complete: %x", 
+			    DWC_DEBUGPL(DBG_HCD,"frame_number 0x%x, start 0x%x, complete: %x", 
+			        _hcd->frame_number, qh->start_split_frame, qtd->complete_split);			        
 				qtd->complete_split = 0;
 				
 				qh->sched_frame = dwc_frame_num_inc(qh->start_split_frame,

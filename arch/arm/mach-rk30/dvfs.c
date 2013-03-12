@@ -28,7 +28,7 @@
 #include <linux/io.h>
 #include <linux/hrtimer.h>
 
-#if 1
+#if 1 //IAM
 #define DVFS_DBG(fmt, args...) {while(0);}
 #else
 #define DVFS_DBG(fmt, args...) printk(KERN_DEBUG "DVFS DBG:\t"fmt, ##args)
@@ -71,6 +71,8 @@ static int dump_dbg_map(char* buf);
 
 int dvfs_regulator_set_voltage_readback(struct regulator *regulator, int min_uV, int max_uV)
 {
+return 0;
+//IAM
 	int ret = 0, read_back = 0;
 	ret = dvfs_regulator_set_voltage(regulator, max_uV, max_uV);
 	if (ret < 0) {
@@ -327,7 +329,7 @@ int dvfs_set_arm_logic_volt(struct dvfs_arm_table *dvfs_cpu_logic_table,
 		dep_cpu2core_table[i].frequency = dvfs_cpu_logic_table[i].frequency;
 		dep_cpu2core_table[i].index = dvfs_cpu_logic_table[i].logic_volt;
 	}
-
+	DVFS_DBG("%s ,table items %d\n",__func__,i);
 	cpu_dvfs_table[i].frequency = CPUFREQ_TABLE_END;
 	dep_cpu2core_table[i].frequency = CPUFREQ_TABLE_END;
 
@@ -703,7 +705,7 @@ int check_volt_correct(int volt_old, int *volt_new, int volt_dep_old, int *volt_
 		int clk_biger_than_dep, int dep_biger_than_clk)
 {
 	int up_boundary = 0, low_boundary = 0;
-	DVFS_DBG("%d %d\n", clk_biger_than_dep, dep_biger_than_clk);
+	DVFS_DBG("clk_biger_than_dep:%d  dep_biger_than_clk:%d volt_old%d\n", clk_biger_than_dep, dep_biger_than_clk, volt_old);
 	up_boundary = volt_old + dep_biger_than_clk;
 	low_boundary = volt_old - clk_biger_than_dep;
 	
@@ -718,14 +720,14 @@ int check_volt_correct(int volt_old, int *volt_new, int volt_dep_old, int *volt_
 	
 	if (*volt_dep_new < low_boundary || *volt_dep_new > up_boundary) {
 
+		DVFS_LOG("%s target volt out of bondary volt=%d(old=%d), volt_dep=%d(dep_old=%d), up_bnd=%d(dn=%d)\n",
+				__func__, *volt_new, volt_old, *volt_dep_new, volt_dep_old, up_boundary, low_boundary);		
 		if (*volt_dep_new < low_boundary) {
 			*volt_dep_new = low_boundary;
 			
 		} else if (*volt_dep_new > up_boundary) {
 			*volt_new = *volt_dep_new - dep_biger_than_clk;
 		}
-		DVFS_LOG("%s target volt out of bondary volt=%d(old=%d), volt_dep=%d(dep_old=%d), up_bnd=%d(dn=%d)\n",
-				__func__, *volt_new, volt_old, *volt_dep_new, volt_dep_old, up_boundary, low_boundary);		
 		return 0;
 	}
 	return 0;
@@ -977,6 +979,7 @@ int dvfs_get_depend_volt(struct clk_node *dvfs_clk, struct vd_node *dvfs_vd_dep,
 	DVFS_ERR("%s can not find vd node %s\n", __func__, dvfs_vd_dep->name);
 	return -1;
 }
+
 static struct clk_node *dvfs_clk_cpu;
 static struct vd_node vd_core;
 int dvfs_target_cpu(struct clk *clk, unsigned long rate_hz)
@@ -1043,7 +1046,8 @@ int dvfs_target_cpu(struct clk *clk, unsigned long rate_hz)
 			if (volt_dep_new <= 0) 
 				goto fail_roll_back;
 
-			ret = dvfs_scale_volt_bystep(dvfs_clk->vd, &vd_core, volt_new, volt_dep_new, 
+//			ret = dvfs_scale_volt_bystep(dvfs_clk->vd, &vd_core, volt_new, volt_dep_new, 
+			ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk->vd, volt_new, volt_dep_new, 
 					ARM_HIGHER_LOGIC, LOGIC_HIGHER_ARM); 
 			if (ret < 0) 
 				goto fail_roll_back;
@@ -1081,7 +1085,8 @@ int dvfs_target_cpu(struct clk *clk, unsigned long rate_hz)
 			if (volt_dep_new <= 0) 
 				goto out;
 
-			ret = dvfs_scale_volt_bystep(dvfs_clk->vd, &vd_core, volt_new, volt_dep_new, 
+//			ret = dvfs_scale_volt_bystep(dvfs_clk->vd, &vd_core, volt_new, volt_dep_new, 
+			ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk->vd, volt_new, volt_dep_new, 
 					ARM_HIGHER_LOGIC, LOGIC_HIGHER_ARM); 
 			if (ret < 0) 
 				goto out;
@@ -1165,7 +1170,8 @@ int dvfs_target_core(struct clk *clk, unsigned long rate_hz)
 		if (volt_dep_new < 0) 
 			goto fail_roll_back;
 
-		ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk_cpu->vd, volt_new, volt_dep_new, 
+//IAM		ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk_cpu->vd, volt_new, volt_dep_new, 
+		ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk->vd, volt_new, volt_dep_new, 
 					LOGIC_HIGHER_ARM, ARM_HIGHER_LOGIC); 
 		if (ret < 0) 
 			goto fail_roll_back;
@@ -1195,7 +1201,8 @@ int dvfs_target_core(struct clk *clk, unsigned long rate_hz)
 		if (volt_dep_new < 0) 
 			goto out;
 
-		ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk_cpu->vd, volt_new, volt_dep_new, 
+//IAM		ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk_cpu->vd, volt_new, volt_dep_new, 
+		ret = dvfs_scale_volt_bystep(dvfs_clk->vd, dvfs_clk->vd, volt_new, volt_dep_new, 
 					LOGIC_HIGHER_ARM, ARM_HIGHER_LOGIC); 
 		if (ret < 0) 
 			goto out;
