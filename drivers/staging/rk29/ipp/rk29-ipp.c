@@ -41,7 +41,6 @@
 #include <linux/timer.h>
 #include <plat/ipp.h>
 
-
 struct ipp_drvdata {
   	struct miscdevice miscdev;
   	struct device dev;
@@ -908,7 +907,7 @@ static int ipp_drv_remove(struct platform_device *pdev)
 }
 
 static struct platform_driver rk29_ipp_driver = {
-	.probe		= ipp_drv_probe,
+//	.probe		= ipp_drv_probe,
 	.remove		= ipp_drv_remove,
 	.driver		= {
 		.owner  = THIS_MODULE,
@@ -920,11 +919,13 @@ static int __init rk29_ipp_init(void)
 {
 	int ret;
 
-	if ((ret = platform_driver_register(&rk29_ipp_driver)) != 0)
+//	if ((ret = platform_driver_register(&rk29_ipp_driver)) != 0)
+	if ((ret = platform_driver_probe(&rk29_ipp_driver, ipp_drv_probe)) != 0)
 		{
 			ERR("Platform device register failed (%d).\n", ret);
 			return ret;
 		}
+
 		INFO("Module initialized.\n");
 		return 0;
 }

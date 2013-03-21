@@ -28,6 +28,8 @@
 #include <linux/mali/mali_utgard.h>
 #include "mali_kernel_common.h"
 
+//#define CONFIG_MALI_OVERCLOCK_400 1
+
 #define IRQ_GP_3D IRQ_GPU_GP
 
 #define IRQ_GPMMU_3D IRQ_GPU_MMU

@@ -988,7 +988,7 @@ static struct platform_device device_hdmi = {
 };
 #endif
 
-#ifdef CONFIG_RGA_RK30
+//IAM#ifdef CONFIG_RGA_RK30
 static struct resource resource_rga[] = {
 	[0] = {
 		.start = RK30_RGA_PHYS,
@@ -1008,7 +1008,7 @@ static struct platform_device device_rga = {
 	.num_resources	= ARRAY_SIZE(resource_rga),
 	.resource	= resource_rga,
 };
-#endif
+//#endif
 
 static struct resource resource_ipp[] = {
 	[0] = {
@@ -1337,9 +1337,9 @@ static int __init rk30_init_devices(void)
 #ifdef CONFIG_USB20_HOST
 	platform_device_register(&device_usb20_host);
 #endif
-#ifdef CONFIG_RGA_RK30
+//IAM#ifdef CONFIG_RGA_RK30
 	platform_device_register(&device_rga);
-#endif
+//#endif
 	platform_device_register(&device_ipp);
 #ifdef CONFIG_LCDC0_RK30
 	platform_device_register(&device_lcdc0);

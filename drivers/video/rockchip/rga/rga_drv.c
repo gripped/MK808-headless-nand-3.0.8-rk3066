@@ -878,7 +878,7 @@ static int rga_blit_sync(rga_session *session, struct rga_req *req)
 
     if (unlikely(ret_timeout< 0))
     {
-		pr_err("sync pid %d wait task ret %d\n", session->pid, ret_timeout);
+//IAM		pr_err("sync pid %d wait task ret %d\n", session->pid, ret_timeout);
         mutex_lock(&rga_service.lock);
         rga_del_running_list();
         mutex_unlock(&rga_service.lock);

@@ -33,15 +33,12 @@
 #include "rk30_lcdc.h"
 
 
-
-
-
-
 static int dbg_thresd = 0;
 module_param(dbg_thresd, int, S_IRUGO|S_IWUSR);
 #define DBG(level,x...) do { if(unlikely(dbg_thresd > level)) printk(KERN_INFO x); } while (0)
 
-u32 ColorKey = 0x020202;
+//u32 ColorKey = 0x020202;
+u32 ColorKey = 0;
 
 static int init_rk30_lcdc(struct rk_lcdc_device_driver *dev_drv)
 {
@@ -238,12 +235,12 @@ static int rk30_load_screen(struct rk_lcdc_device_driver *dev_drv, bool initscre
 	return 0;
 }
 
-static int mcu_refresh(struct rk30_lcdc_device *lcdc_dev)
+/*static int mcu_refresh(struct rk30_lcdc_device *lcdc_dev)
 {
    
     return 0;
 }
-
+*/
 
 
 //enable layer,open:1,enable;0 disable
@@ -368,11 +365,11 @@ static char cursor_buf[CURSOR_BUF_SIZE] = {
 static int rk30_cursor_set_image(struct rk_lcdc_device_driver *dev_drv,char *imgdata)
 {
 	struct rk30_lcdc_device *lcdc_dev = container_of(dev_drv,struct rk30_lcdc_device,driver);
-	int x, y;
-	char *pmsk = imgdata;
-	char  *dst = (char*)cursor_buf;
-	unsigned char  dmsk = 0;
-	unsigned int   op,shift,offset;
+//	int x, y;
+//	char *pmsk = imgdata;
+//	char  *dst = (char*)cursor_buf;
+//	unsigned char  dmsk = 0;
+//	unsigned int   op,shift,offset;
 
 //	memset(cursor_buf, 0x00, CURSOR_BUF_SIZE);
 //	/* cursor is a 2 bpp 32x32 bitmap this routine
@@ -425,9 +422,12 @@ static int rk30_cursor_set_image(struct rk_lcdc_device_driver *dev_drv,char *img
 //	}
 //	flush_cache_all();
 //	msleep(10);
+//IAM
+    spin_lock(&lcdc_dev->reg_lock);
     LcdWrReg(lcdc_dev, HWC_MST, __pa(cursor_buf));
     LcdMskReg(lcdc_dev, SYS_CTRL0, m_HWC_RELOAD_EN, v_HWC_RELOAD_EN(1));
     LCDC_REG_CFG_DONE();
+    spin_unlock(&lcdc_dev->reg_lock);
 
     return 0;
 }
@@ -437,17 +437,20 @@ static int rk30_cursor_set_cmap(struct rk_lcdc_device_driver *dev_drv, int backg
 	struct rk30_lcdc_device *lcdc_dev = container_of(dev_drv,struct rk30_lcdc_device,driver);
 	
 //	printk(KERN_INFO "lcdc%d cursor bg %08x fg %08x\n",lcdc_dev->id, background, frontground);
+//IAM
+	spin_lock(&lcdc_dev->reg_lock);
 	LcdMskReg(lcdc_dev, HWC_COLOR_LUT0, m_HWC_R|m_HWC_G|m_HWC_B, 0x000000);
 	LcdMskReg(lcdc_dev, HWC_COLOR_LUT1, m_HWC_R|m_HWC_G|m_HWC_B, 0xFFFFFF);
 //	LcdMskReg(lcdc_dev, HWC_COLOR_LUT2, m_HWC_R|m_HWC_G|m_HWC_B, 0xFF0000);
 	LCDC_REG_CFG_DONE();
+	spin_unlock(&lcdc_dev->reg_lock);
 	return 0;
 }
 
 static int rk30_cursor_set_pos(struct rk_lcdc_device_driver *dev_drv, int x, int y)
 {
 	struct rk30_lcdc_device *lcdc_dev = container_of(dev_drv,struct rk30_lcdc_device,driver);
-	struct layer_par *par=dev_drv->layer_par[0];
+//	struct layer_par *par=dev_drv->layer_par[0];
 	int xpos, ypos;
 	
 //IAM	xpos = (x * dev_drv->screen->x_res * dev_drv->x_scale/100)/1280;
@@ -458,8 +461,12 @@ static int rk30_cursor_set_pos(struct rk_lcdc_device_driver *dev_drv, int x, int
 	xpos += dev_drv->screen->x_res * (100 - dev_drv->x_scale)/200 + dev_drv->screen->left_margin + dev_drv->screen->hsync_len;
 	ypos += dev_drv->screen->y_res * (100 - dev_drv->y_scale)/200 + dev_drv->screen->upper_margin + dev_drv->screen->vsync_len;
 //	printk(KERN_INFO "lcdc%d cursor xpos %d ypos %d\n",lcdc_dev->id, xpos, ypos);
-    LcdWrReg(lcdc_dev, HWC_DSP_ST, v_DSP_STX(xpos)|v_DSP_STY(ypos));
+//IAM
+	spin_lock(&lcdc_dev->reg_lock);
+	LcdWrReg(lcdc_dev, HWC_DSP_ST, v_DSP_STX(xpos)|v_DSP_STY(ypos));
 	LCDC_REG_CFG_DONE();
+	spin_unlock(&lcdc_dev->reg_lock);
+	return 0;
 }
 //$_rbox_$_modify_end
 
@@ -898,7 +905,7 @@ static int rk30_lcdc_ovl_mgr(struct rk_lcdc_device_driver *dev_drv,int swap,bool
 }
 static int rk30_lcdc_get_disp_info(struct rk_lcdc_device_driver *dev_drv,int layer_id)
 {
-	struct rk30_lcdc_device *lcdc_dev = container_of(dev_drv,struct rk30_lcdc_device,driver);
+//	struct rk30_lcdc_device *lcdc_dev = container_of(dev_drv,struct rk30_lcdc_device,driver);
 	return 0;
 }
 
@@ -1148,7 +1155,8 @@ static int __devinit rk30_lcdc_probe (struct platform_device *pdev)
     	lcdc_dev->preg = (LCDC_REG*)lcdc_dev->reg_vir_base;
 	printk("lcdc%d:reg_phy_base = 0x%08x,reg_vir_base:0x%p\n",pdev->id,lcdc_dev->reg_phy_base, lcdc_dev->preg);
 	//$_rbox_$_modify_$ zhy modified for box display system	
-	lcdc_dev->dsp_lut_addr_base = &lcdc_dev->preg->DSP_LUT_ADDR;
+//IAM	lcdc_dev->dsp_lut_addr_base = &lcdc_dev->preg->DSP_LUT_ADDR;
+	lcdc_dev->dsp_lut_addr_base = lcdc_dev->preg->DSP_LUT_ADDR;
 	//$_rbox_$_modify_end
 	lcdc_dev->driver.dev=&pdev->dev;
 	lcdc_dev->driver.screen = screen;
