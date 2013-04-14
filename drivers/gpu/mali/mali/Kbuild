@@ -154,12 +154,7 @@ SVN_INFO = (cd $(src); (svn info || git svn info || \
 	"Last Changed Rev: $(MALI_RELEASE_NAME)\n" \
 	"Last Changed Date: $(MALI_RELEASE_NAME)") 2>/dev/null)
 
-SVN_REV := $(shell (cd $(src); echo "$(SVN_INFO)" | grep '^Revision: '| sed -e 's/^Revision: //' ) 2>/dev/null )
-ifeq ($(SVN_REV),)
 SVN_REV := $(MALI_RELEASE_NAME)
-else
-SVN_REV := $(MALI_RELEASE_NAME)-r$(SVN_REV)
-endif
 
 ccflags-y += -DSVN_REV_STRING=\"$(SVN_REV)\"
 
