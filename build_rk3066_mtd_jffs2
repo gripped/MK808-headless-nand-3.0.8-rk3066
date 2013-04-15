@@ -1,0 +1,20 @@
+rm -Rv ./BUILT/*
+rm -Rv ./modules/lib
+make mrproper
+
+TOOLCHAIN=./toolchain/arm-linux-androideabi-4.6/prebuilt/linux-x86/bin/arm-linux-androideabi-
+export INSTALL_MOD_PATH=./modules
+export CORES=`nproc`
+
+
+ARCH=arm CROSS_COMPILE=$TOOLCHAIN make rk3066_mtd_jffs2_defconfig
+ARCH=arm CROSS_COMPILE=$TOOLCHAIN make zImage -j$CORES
+ARCH=arm CROSS_COMPILE=$TOOLCHAIN make modules -j$CORES
+ARCH=arm CROSS_COMPILE=$TOOLCHAIN make modules_install -j$CORES
+
+./mkbootimage/mkbootimg --kernel ./arch/arm/boot/zImage --ramdisk ./mkbootimage/fakeramdisk.gz -o ./BUILT/mtd_jffs2_boot.img
+
+rm ./modules/lib/modules/3.0.8+/build
+rm ./modules/lib/modules/3.0.8+/source
+cp ./modules/rk30xxnand_ko.ko.3.0.8+ ./modules/lib/modules/3.0.8+/kernel/rk30xxnand_ko.ko
+tar -C ./modules/lib/modules/ -czf ./BUILT/modules.tgz 3.0.8+/
