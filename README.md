@@ -17,7 +17,7 @@ https://github.com/Galland/rk30_linux_initramfs.git <br>
 The config is based on Picuntu 0.9 RC2 as RC3 was throwing up hung process errors <br>
 
  <br>
-I started this as my intention is to run a mail relay on my MK808 of my home fibre connection.  <br>
+I started this as my intention is to run a mail relay on my MK808 on my home FTTC connection.  <br>
 (I have a couple of cheap, but fair powerful for the price, servers where the provider blocks port 25 and I don't want to use their relay if I can avoid it) <br>
 I don't need Android on the device at all and it seems a waste to leave the internal nand almost unused. <br>
 
