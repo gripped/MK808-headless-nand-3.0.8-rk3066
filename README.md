@@ -94,6 +94,15 @@ https://github.com/jin-eld/cm_rk3066_ventos97/blob/master/ramdisk/rk30xxnand_ko.
 It might brick your entire life ?
 
 
+To Do
+=====
+Test jffs2 & ubifs
+benchmark internel nand vs class 10 SD
+try to implement raid1 between nand & SD
+make headless version of kernel
+Anything I think of.
+
+
 
 
 
