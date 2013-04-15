@@ -10,9 +10,9 @@ https://github.com/aloksinha2001/picuntu-3.0.8-aloksinha2001
 The toolchain is taken from Omegamoons tree
 https://github.com/omegamoon/rockchip-rk30xx-mk808
 The original initramfs.cpio is from
-git://github.com/Galland/rk30_linux_initramfs.github
+https://github.com/Galland/rk30_linux_initramfs.github
 the mkbootimg is from
-git://github.com/Galland/rk30_linux_initramfs.git
+https://github.com/Galland/rk30_linux_initramfs.git
 
 The config is based on Picuntu 0.9 RC2 as RC3 was throwing up hung process errors
 
