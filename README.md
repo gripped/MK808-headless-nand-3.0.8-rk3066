@@ -46,8 +46,8 @@ You need to have your MTD block laid out as I have set up in the configs Kernel 
 
 The parameter file is in the root directory "parameter1gb"
 
-Flash Finless bobs 1.7 MK808 kernel and you get the right layout
-http://www.freaktab.com/showthread.php?3857-NEW-MK808-quot-all-models-quot-Finless-1-7
+Flash Finless bobs 2.0 MK808 rom with the  parameter1gb and you get the right layout
+http://www.freaktab.com/showthread.php?4248-NEW-MK808-JB-4-2-2-Finless-ROM-2-0-BETA
 
 Copy ./modules/rk30xxnand_ko.ko.3.0.8+ to the /lib/modules/kernel/rk30xxnand_ko.ko on your sdcard and on the MK808 run depmod -a
 
