@@ -1,5 +1,5 @@
-Install Picuntu on Intenal Nand <br>
-=============================== <br>
+Install Picuntu on Intenal Nand 
+=============================== 
 
 First of all this is in a state of flux and may be broken at any time. <br>
 I would have liked to fork repos and pull from here and there but do not yet know much about git so I'm uploading this as a whole. <br>
@@ -31,8 +31,8 @@ This will stop Android working on your device (though you can flash it back) <br
 If you don't understand why I suggest you stop here. <br>
 
  <br>
-Doing it !   (Don't blame me) <br>
-======================= <br>
+Doing it !   (Don't blame me)
+======================= 
 
 Install Picuntu 0.9 RC2 and make sure its working fully on the sdcard. <br>
 
@@ -94,8 +94,8 @@ https://github.com/jin-eld/cm_rk3066_ventos97/blob/master/ramdisk/rk30xxnand_ko.
 It might brick your entire life ? <br>
 
 
-To Do <br>
-===== <br>
+To Do 
+===== 
 Test jffs2 & ubifs <br>
 benchmark internel nand vs class 10 SD <br>
 try to implement raid1 between nand & SD <br>
@@ -111,13 +111,13 @@ Anything I think of. <br>
  <br>
 
  <br>
-picuntu-3.0.8-alok <br>
-================== <br>
+picuntu-3.0.8-alok 
+================== 
 
 rk3066-kernel - derived from mix of andrew source, omegamoon, 0.3a kernel, driver sources <br>
 
-Integrated kernel for Picuntu 3.0.8-alok+  <br>
-============= <br>
+Integrated kernel for Picuntu 3.0.8-alok+ 
+=============
 
 Linux/Android kernel for the Rockchip RK3066 SoC <br>
 
@@ -148,5 +148,5 @@ Changelog - Kernel - 3.0.8-alok+ <br>
 - Three graphic driver kernels - 1080p, 720, VGA are released. <br>
 - No it does not yet have support for MX1 wifi, RK802III/s - wifi - I am still hunting for the source. - A Kirby from Rikomagic was successful in getting us the source code for MT. (wifi + BT) trying to get that integrated now. <br>
 
-======= <br>
+======= 
 
