@@ -18,8 +18,8 @@ The config is based on Picuntu 0.9 RC2 as RC3 was throwing up hung process error
 
  <br>
 I started this as my intention is to run a mail relay on my MK808 of my home fibre connection.  <br>
-(I have some cheap, but fair powerful for the price, servers where the provider blocks port 25 and I don't want to use their relay if I can avoid it) <br>
-I don't need Android on the device at all and it seems a waste to leave the internal nand unused. <br>
+(I have a couple of cheap, but fair powerful for the price, servers where the provider blocks port 25 and I don't want to use their relay if I can avoid it) <br>
+I don't need Android on the device at all and it seems a waste to leave the internal nand almost unused. <br>
 
 First I wanted to get a functional Picuntu on the internal Nand, this is done. <br>
 Next I will be optimizing the kernel for headless running. Anything not needed will be disposed of. <br>
@@ -42,7 +42,7 @@ Look at this compilation errors if any and you'll work out what missing <br>
 
  <br>
 
-You need to have your MTD block laid out as I have set up in the configs Kernel CONFIG_CMDLINE <br>
+You need to have your MTD blocks / partitions laid out as I have set up in the configs Kernel CONFIG_CMDLINE <br>
 
 The parameter file is in the root directory "parameter1gb" <br>
 
@@ -97,17 +97,13 @@ It might brick your entire life ? <br>
 To Do 
 ===== 
 Test jffs2 & ubifs <br>
-benchmark internel nand vs class 10 SD <br>
-try to implement raid1 between nand & SD <br>
-make headless version of kernel <br>
+Benchmark internel nand vs class 10 SD <br>
+Try to implement raid1 between nand & SD <br>
+Make headless version of kernel <br>
+Find any improved code in other repo's <br>
 Anything I think of. <br>
 
- <br>
-
- <br>
-
- <br>
-
+ 
  <br>
 
  <br>
