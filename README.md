@@ -17,13 +17,12 @@ https://github.com/Galland/rk30_linux_initramfs.git <br>
 The config is based on Picuntu 0.9 RC2 as RC3 was throwing up hung process errors <br>
 
  <br>
-I started this as my intention is to run a mail relay on my MK808 on my home FTTC connection.  <br>
-(I have a couple of cheap, but fair powerful for the price, servers where the provider blocks port 25 and I don't want to use their relay if I can avoid it) <br>
+I started this as my intention is to run a mail relay on one MK808 on my home FTTC connection.  <br>
 I don't need Android on the device at all and it seems a waste to leave the internal nand almost unused. <br>
 
 First I wanted to get a functional Picuntu on the internal Nand, this is done. <br>
 Next I will be optimizing the kernel for headless running. Anything not needed will be disposed of. <br>
-I'm still waiting for a Network switch and once I have it wifi will be going from my build as well( but I'll leave configs in place) <br>
+I'm still waiting for a Network switch and once I have it wifi will be going from my build as well( but I'll leave configs and code in place) <br>
 
 Only tested on MK808. I do have a MK808B as well so may try this later (no wifi or BT) but other models YOU ARE ON YOUR OWN <br>
 
@@ -64,11 +63,11 @@ modprobe rk30xxnand_ko.ko <br>
 
 cat /proc/mtd  <br>
 
-should show mtd partition. If not its not working , figure it out. <br>
+should show the mtd partitions. If not its not working , figure it out. <br>
 
 mkfs.ext4 /dev/mtdblock9 <br>
 
-mount /dev/mtdblock9 mnt <br>
+mount /dev/mtdblock9 /mnt <br>
 
 rsync -avx / /mnt <br>
 
@@ -84,10 +83,10 @@ Flash to boot <br>
 Everything works and you are happy. <br>
 
 As I say this is stiil a work in progress <br>
-The modules these compilatons produced did not work (missing symbols) but the set already on my picuntu install did. <br>
+The modules these compilations produced did not work (missing symbols) but the set already on my picuntu install did. <br>
 I will investigate <br>
 
-The rk30xxnand_ko.ko I took from the MK808 rom worked on Picuntu but had were odd on my PC. (cp cannot stat) <br>
+The rk30xxnand_ko.ko I took from the MK808 rom worked on Picuntu but  were odd on my PC. (cp cannot stat, seemed to disappear !) <br>
 So I took one from here <br>
 https://github.com/jin-eld/cm_rk3066_ventos97/blob/master/ramdisk/rk30xxnand_ko.ko.3.0.8%2B <br>
 
@@ -96,12 +95,13 @@ It might brick your entire life ? <br>
 
 To Do 
 ===== 
-Test jffs2 & ubifs <br>
-Benchmark internel nand vs class 10 SD <br>
+Test jffs2 & ubifs & yaffs2 (yaffs2 doesn't compile atm)<br>
+Benchmark internel nand vs class 10 SD (simple test of reading and writing a 125M file to and from ramdisk show preformance almost the same , SD very slightly won.<br>
 Try to implement raid1 between nand & SD <br>
+Change partion layout to waste less space. <br>
 Make headless version of kernel <br>
 Find any improved code in other repo's <br>
-Anything I think of. <br>
+Try to debbootstrap debian <br>
 
  
  <br>
