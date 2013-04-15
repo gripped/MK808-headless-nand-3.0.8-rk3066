@@ -16,7 +16,6 @@ https://github.com/Galland/rk30_linux_initramfs.git <br>
 
 The config is based on Picuntu 0.9 RC2 as RC3 was throwing up hung process errors <br>
 
- <br>
 I started this as my intention is to run a mail relay on one MK808 on my home FTTC connection.  <br>
 I don't need Android on the device at all and it seems a waste to leave the internal nand almost unused. <br>
 
@@ -35,9 +34,9 @@ Doing it !   (Don't blame me)
 
 Install Picuntu 0.9 RC2 and make sure its working fully on the sdcard. <br>
 
-The kernel build tree is self contained and I think you should be able to build without to much extra packages <br>
+The kernel build tree is self contained and I think you should be able to build without to many extra packages <br>
 Of the top of my head I had to install SHA something and LZO something (I'm on arch) <br>
-Look at this compilation errors if any and you'll work out what missing <br>
+Look at the compilation errors if any and you'll work out what's missing <br>
 
  <br>
 
