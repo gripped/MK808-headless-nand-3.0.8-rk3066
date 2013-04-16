@@ -87,7 +87,7 @@ Everything works and you are happy. <br>
 
 As I say this is stiil a work in progress <br>
 The modules these compilations produced did not work (missing symbols) but the set already on my picuntu install did. <br>
-I will investigate <br>
+I will investigate. <b>Fixed</> Needed CFLAGS_MODULE=-fno-pic to compile the modules <br> 
 
 The rk30xxnand_ko.ko I took from the MK808 rom worked on Picuntu but  were odd on my PC. (cp cannot stat, seemed to disappear !) <br>
 So I took one from here <br>

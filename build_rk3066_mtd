@@ -9,7 +9,7 @@ export CORES=`nproc`
 
 ARCH=arm CROSS_COMPILE=$TOOLCHAIN make rk3066_mtd_defconfig
 ARCH=arm CROSS_COMPILE=$TOOLCHAIN make zImage -j$CORES
-ARCH=arm CROSS_COMPILE=$TOOLCHAIN make modules -j$CORES
+ARCH=arm CROSS_COMPILE=$TOOLCHAIN make CFLAGS_MODULE=-fno-pic modules -j$CORES
 ARCH=arm CROSS_COMPILE=$TOOLCHAIN make modules_install -j$CORES
 
 ./mkbootimage/mkbootimg --kernel ./arch/arm/boot/zImage --ramdisk ./mkbootimage/fakeramdisk.gz -o ./BUILT/mtdboot.img
