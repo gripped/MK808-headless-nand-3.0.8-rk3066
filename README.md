@@ -1,5 +1,9 @@
 Install Picuntu on Intenal Nand 
-=============================== 
+===============================  
+
+<b>(I have now installed debian wheezy via debootstrap. The below still applies and I needed Picuntu to do the debootstrap. The instructions below are intentionally vague !.
+In a nutshell what I have done is add the rk30xxnand_ko.ko to initramfs.cpio and insert it so that the kernel can find root on the mtdblock. I will write all this up properly on my blog when I get time. 
+)</b>
 
 First of all this is in a state of flux and may be broken at any time. <br>
 I would have liked to fork repos and pull from here and there but do not yet know much about git so I'm uploading this as a whole. <br>
@@ -144,4 +148,3 @@ Changelog - Kernel - 3.0.8-alok+ <br>
 - No it does not yet have support for MX1 wifi, RK802III/s - wifi - I am still hunting for the source. - A Kirby from Rikomagic was successful in getting us the source code for MT. (wifi + BT) trying to get that integrated now. <br>
 
 ======= 
-
