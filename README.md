@@ -46,7 +46,7 @@ Look at the compilation errors if any and you'll work out what's missing <br>
 
 You need to have your MTD blocks / partitions laid out as I have set up in the configs Kernel CONFIG_CMDLINE <br>
 
-The parameter file is in the root directory "parameter1gb" <br>
+The parameter file is in the root directory "parameter1_custom" <br>
 
 Flash Finless bobs 2.0 MK808 rom with the  parameter1gb and you get the right layout <br>
 http://www.freaktab.com/showthread.php?4248-NEW-MK808-JB-4-2-2-Finless-ROM-2-0-BETA <br>
@@ -89,22 +89,18 @@ As I say this is stiil a work in progress <br>
 The modules these compilations produced did not work (missing symbols) but the set already on my picuntu install did. <br>
 I will investigate. <b>Fixed</> Needed CFLAGS_MODULE=-fno-pic to compile the modules <br> 
 
-The rk30xxnand_ko.ko I took from the MK808 rom worked on Picuntu but  were odd on my PC. (cp cannot stat, seemed to disappear !) <br>
-So I took one from here <br>
-https://github.com/jin-eld/cm_rk3066_ventos97/blob/master/ramdisk/rk30xxnand_ko.ko.3.0.8%2B <br>
 
-It might brick your entire life ? <br>
 
 
 To Do 
 ===== 
-Test jffs2 & ubifs & yaffs2 (yaffs2 doesn't compile atm)<br>
+Test jffs2 & ubifs & yaffs2 (yaffs2 doesn't compile atm)  <b> No go, the Rockchip Nand module (rk30xxnand_ko.ko.3.0.8+) is only for mtdblock access it seems</b><br>
 Benchmark internel nand vs class 10 SD (simple test of reading and writing a 125M file to and from ramdisk show preformance almost the same , SD very slightly won.<br>
 Try to implement raid1 between nand & SD <br>
-Change partion layout to waste less space. <br>
+Change partion layout to waste less space. <b>Done,/b><br>
 Make headless version of kernel <br>
 Find any improved code in other repo's <br>
-Try to debbootstrap debian <br>
+Try to debbootstrap debian. <b>Done,/b><br> 
 
  
  <br>
