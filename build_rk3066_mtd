@@ -17,4 +17,4 @@ ARCH=arm CROSS_COMPILE=$TOOLCHAIN make modules_install -j$CORES
 rm ./modules/lib/modules/3.0.8+/build
 rm ./modules/lib/modules/3.0.8+/source
 cp ./modules/rk30xxnand_ko.ko.3.0.8+ ./modules/lib/modules/3.0.8+/kernel/rk30xxnand_ko.ko
-tar -C ./modules/lib/modules/ -czf ./BUILT/modules.tgz 3.0.8+/
+tar -C ./modules/lib/modules/ -czf ./BUILT/modules.tar.gz 3.0.8+/

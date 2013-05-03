@@ -10,13 +10,13 @@ I would have liked to fork repos and pull from here and there but do not yet kno
 Credits to AndrewDB , Omegamoon, alok & finless bob <br>
 
 The kernel tree is from <br>
-https://github.com/aloksinha2001/picuntu-3.0.8-aloksinha2001 <br>
+https://github.com/aloksinha2001/picuntu-3.0.8-alok <br>
 The toolchain is taken from Omegamoons tree <br>
 https://github.com/omegamoon/rockchip-rk30xx-mk808 <br>
 The original initramfs.cpio is from <br>
-https://github.com/Galland/rk30_linux_initramfs.github <br>
+https://github.com/Galland/rk30_linux_initramfs <br>
 the mkbootimg is from <br>
-https://github.com/Galland/rk30_linux_initramfs.git <br>
+https://github.com/jin-eld/rk3066-mkbootimg <br>
 
 The config is based on Picuntu 0.9 RC2 as RC3 was throwing up hung process errors <br>
 
@@ -96,51 +96,10 @@ To Do
 ===== 
 Test jffs2 & ubifs & yaffs2 (yaffs2 doesn't compile atm)  <b> No go, the Rockchip Nand module (rk30xxnand_ko.ko.3.0.8+) is only for mtdblock access it seems</b><br>
 Benchmark internel nand vs class 10 SD (simple test of reading and writing a 125M file to and from ramdisk show preformance almost the same , SD very slightly won.<br>
-Try to implement raid1 between nand & SD <br>
+Try to implement raid1 between nand & SD <br> <b>not worth it , rsync copy instead</b>
 Change partion layout to waste less space. <b>Done,/b><br>
 Make headless version of kernel <br>
 Find any improved code in other repo's <br>
 Try to debbootstrap debian. <b>Done,/b><br> 
 
  
- <br>
-
- <br>
-picuntu-3.0.8-alok 
-================== 
-
-rk3066-kernel - derived from mix of andrew source, omegamoon, 0.3a kernel, driver sources <br>
-
-Integrated kernel for Picuntu 3.0.8-alok+ 
-=============
-
-Linux/Android kernel for the Rockchip RK3066 SoC <br>
-
-Changelog - Kernel - 3.0.8-alok+ <br>
-- Cleaned the previous kernel <br>
-- Removed unwanted TV Tuner cards <br>
-- Bluetooth support retained <br>
-- All cpufreq governors now available - Try userspace, and hav fun.. (Read warning below) <br>
-- Default governor Ondemand <br>
-- Added Serial modules - FTD-SIO, pl2303, Garmin - for serial devices, <br>
-- Added Phone modems - For connecting Data card dongles <br>
-- Added UVC Camera support - Many users have been asking for this <br>
-- Added oprofiler support <br>
-- Added iptables <br>
-- Added NAT/Firewall (inc GRE) support - Now you can make your PicUntu a complete firewall <br>
-- Added USB 1.0 support - remember how your old USB hubs were not being used for bootup, well they _should_ work now. <br>
-- DW_OTG_ debug report suppressed <br>
-- Added USB SCSI adapter - I have lots of SCSI harddisk lying around, and USB adapter for them, but they seemed not to work earlier. <br>
-- Added Pegasus network support <br>
-- FB set - all options enabled - you should have better control for fb setting. <br>
-- Added auxilary Video - If you have a USB LED,LCD screen lying around - try connecting to PIcUntu, should work. (in addition to HDMI) - required for in-car applications. <br>
-- Modules for USB Printer - now you should be able to connect USB printers to PicUntu <br>
-- Serial Modem drivers - Qualcom, NAVMAN, <br>
-- Added Joliet/UDF support - You should be able to connect USB CDROM <br>
-- NFS Client, NFS Server support for V3 , V4 added <br>
-- Ofcourse CIFS continues <br>
-- Integrated BCM40181, rtl8188eu support - so that you no longer need to separately look for modules for basic wifi <br>
-- Three graphic driver kernels - 1080p, 720, VGA are released. <br>
-- No it does not yet have support for MX1 wifi, RK802III/s - wifi - I am still hunting for the source. - A Kirby from Rikomagic was successful in getting us the source code for MT. (wifi + BT) trying to get that integrated now. <br>
-
-======= 
