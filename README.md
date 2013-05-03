@@ -95,7 +95,7 @@ I will investigate. <b>Fixed</> Needed CFLAGS_MODULE=-fno-pic to compile the mod
 To Do 
 ===== 
 Test jffs2 & ubifs & yaffs2 (yaffs2 doesn't compile atm)  <b> No go, the Rockchip Nand module (rk30xxnand_ko.ko.3.0.8+) is only for mtdblock access it seems</b><br>
-Benchmark internel nand vs class 10 SD <b>simple test of reading and writing a 125M file to and from ramdisk show preformance almost the same , SD very slightly won.<br>
+Benchmark internel nand vs class 10 SD <b>simple test of reading and writing a 125M file to and from ramdisk show preformance almost the same , SD very slightly won.</b><br>
 Try to implement raid1 between nand & SD <b>not worth it , hourly rsync  instead</b> <br>
 Change partion layout to waste less space. <b>Done,</b><br>
 Make headless version of kernel <br>
